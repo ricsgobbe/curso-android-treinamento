@@ -5,4 +5,12 @@ package com.monitoratec.monitora.domain.entity;
  */
 
 public class Status {
+
+    public String status;
+    public String body;
+    public String created_on;
+
+
+
+
 }
