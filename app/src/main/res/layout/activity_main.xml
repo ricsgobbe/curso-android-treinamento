@@ -10,8 +10,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.monitoratec.monitora.MainActivity">
 
+
+
+    <ImageView
+        android:id="@+id/git_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"/>
+
     <TextView
+        android:id="@+id/git_text_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/git_image"
+        android:layout_centerInParent="true"
         android:text="Hello World!" />
 </RelativeLayout>
