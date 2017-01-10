@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private TextView gitText;
     private ImageView gitImage;
+    private GithubStatusApi statusApiImpl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,14 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl(GithubStatusApi.BASE_URL)
                 .build();
 
-        GithubStatusApi statusApiImpl = retrofit.create(GithubStatusApi.class);
+        statusApiImpl = retrofit.create(GithubStatusApi.class);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         statusApiImpl.lastMessage().enqueue(new Callback<Status>() {
             @Override
             public void onResponse(Call<Status> call, Response<Status> response) {
@@ -74,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void setImageAndTextColor(Status.Type status){
                 int color = getResources().getColor(status.getColor());
