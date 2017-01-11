@@ -4,23 +4,21 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 
 /**
- * Created by ricardo.sgobbe on 09/01/2017.
+ * Created by ricardo.sgobbe on 11/01/2017.
  */
 
-public interface GithubStatusApi {
+public interface GitHubApi {
+    String BASE_URL = "https://api.github.com/";
 
 
-    String BASE_URL = "https://status.github.com/api/";
-
-     Retrofit RETROFIT = new Retrofit.Builder()
+    Retrofit RETROFIT = new Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build();
 
-
-    @GET("last-message.json")
-    Call<Status> lastMessage();
-
+    @GET("user")
+    Call<User> basicAuth(@Header("Authorization") String credential);
 }

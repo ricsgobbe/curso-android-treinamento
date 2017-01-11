@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">monitora</string>
+    <string name="txt_required">Required</string>
+    <string name="shared_key_file">com.monitoratec.monitora.FILE_PREFERENCE</string>
+    <string name="sp_credential_key">credential_key</string>
+
+    <string name="oauth_client_id">5c575f24943eac9fd9e3</string>
+    <string name="oauth_client_secret">eb127ae8c15efbde8fe0f84c259fb89af5330416</string>
+    <string name="oauth_host">google.com.br</string>
+    <string name="oauth_schema">https</string>
 </resources>
