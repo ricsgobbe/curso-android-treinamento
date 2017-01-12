@@ -33,6 +33,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static com.monitoratec.monitora.domain.entity.Status.Type.GOOD;
+import static com.monitoratec.monitora.domain.entity.Status.Type.MAJOR;
+import static com.monitoratec.monitora.domain.entity.Status.Type.MINOR;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -169,45 +176,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        statusApiImpl.lastMessage().enqueue(new Callback<Status>() {
-            @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
-                if(response.isSuccessful()){
-                    Status.Type status = response.body().status;
-                    switch (status){
-                        case GOOD:
-                            setImageAndTextColor(status);
-                            break;
-                        case MINOR:
-                            setImageAndTextColor(status);
-                            break;
-                        case MAJOR:
-                            setImageAndTextColor(status);
-                            break;
+        statusApiImpl.lastMessage().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Status>() {
+                    @Override
+                    public void onCompleted() {
+
                     }
 
-                /*    Status body = response.body();
-                    Toast.makeText(MainActivity.this, body.status, Toast.LENGTH_LONG).show();*/
-                }else{
-                    try {
-                        String errorBody = response.errorBody().string();
-                        Toast.makeText(MainActivity.this, errorBody, Toast.LENGTH_LONG).show();
-                    } catch (IOException e) {
-                        Log.e(TAG, e.getMessage(), e);
+                    @Override
+                    public void onError(Throwable e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Status> call, Throwable t) {
+                    @Override
+                    public void onNext(Status status) {
 
-            }
-        });
+                        switch (status.getStatusName()){
+                            case GOOD:
+                                setImageAndTextColor(status);
+                                break;
+                            case MINOR:
+                                setImageAndTextColor(status);
+                                break;
+                            case MAJOR:
+                                setImageAndTextColor(status);
+                                break;
+                        }
+                    }
+                });
     }
 
-    private void setImageAndTextColor(Status.Type status){
-                int color = getResources().getColor(status.getColor());
-                gitText.setText(status.getStatusName());
+    private void setImageAndTextColor(Status status){
+
+                int color = getResources().getColor(status.getStatusName().getColor());
+                gitText.setText(status.getStatusName().getStatusName());
                 gitText.setTextColor(color);
                 gitImage.setBackgroundColor(color);
 

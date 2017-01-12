@@ -40,4 +40,9 @@ public class Status {
     }
 
 
+    public Type getStatusName(){
+        return status;
+    }
+
+
 }
