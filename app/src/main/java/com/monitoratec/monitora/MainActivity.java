@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.monitoratec.monitora.domain.entity.AccessToken;
 import com.monitoratec.monitora.domain.entity.GitHubApi;
 import com.monitoratec.monitora.domain.entity.GitHubOAuthApi;
@@ -78,31 +79,34 @@ public class MainActivity extends AppCompatActivity {
                 String userName = gitLogin.getEditText().getText().toString();
                 String password = gitPassword.getEditText().getText().toString();
                 final String credential = Credentials.basic(userName, password);
-               githubApi.basicAuth(credential).enqueue(new Callback<User>() {
-                   @Override
-                   public void onResponse(Call<User> call, Response<User> response) {
-                        if(response.isSuccessful()){
-                            String login = response.body().login;
-                            sharedPreferences.edit()
-                                    .putString(getString(R.string.sp_credential_key), credential)
-                                    .apply();
-                            Snackbar.make(view, login, Snackbar.LENGTH_LONG).show();
-                            sharedPreferences.getString(credential, "");
-                        }else{
-                            try {
-                                String error = response.errorBody().string();
-                            } catch (IOException e) {
-                               Log.e(TAG, e.getMessage());
-                            }
-                        }
-                   }
+               githubApi.basicAuth(credential)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<User>() {
+                           @Override
+                           public void onCompleted() {
 
-                   @Override
-                   public void onFailure(Call<User> call, Throwable t) {
+                           }
 
-                   }
-               });
+                           @Override
+                           public void onError(Throwable e) {
+                                   Log.e(TAG, e.getMessage());
+                           }
+
+                           @Override
+                           public void onNext(User user) {
+                               sharedPreferences.edit()
+                                       .putString(getString(R.string.sp_credential_key), credential)
+                                       .apply();
+                               Snackbar.make(view, user.login, Snackbar.LENGTH_LONG).show();
+                               sharedPreferences.getString(credential, "");
+                           }
+                       });
                processOAuthRedirectUri();
+
+               RxTextView.textChanges(gitLogin.getEditText()).skip(1).subscribe(text ->{
+                  AppUtils.vailidateRequiredField(this, gitLogin);
+               });
            }
         });
 
@@ -141,30 +145,29 @@ public class MainActivity extends AppCompatActivity {
                 //TODO Pegar o access token (Client ID, Client Secret e Code)
                 String clientId = getString(R.string.oauth_client_id);
                 String clientSecret = getString(R.string.oauth_client_secret);
-                githubOAuthApi.accessToken(clientId, clientSecret, code).enqueue(new Callback<AccessToken>() {
-                    @Override
-                    public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
-                        if(response.isSuccessful()){
-                            AccessToken accessToken = response.body();
-                            sharedPreferences.edit()
-                                    .putString(getString(R.string.sp_credential_key), accessToken.getAuthCredential())
-                                    .apply();
-                            Snackbar.make(gitOAuth, accessToken.access_token, Snackbar.LENGTH_LONG).show();
-                            sharedPreferences.getString(accessToken.access_token, "");
-                        }else{
-                            try {
-                                String error = response.errorBody().string();
-                            } catch (IOException e) {
+                githubOAuthApi.accessToken(clientId, clientSecret, code)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<AccessToken>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
                                 Log.e(TAG, e.getMessage());
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<AccessToken> call, Throwable t) {
-
-                    }
-                });
+                            @Override
+                            public void onNext(AccessToken accessToken) {
+                                sharedPreferences.edit()
+                                        .putString(getString(R.string.sp_credential_key), accessToken.getAuthCredential())
+                                        .apply();
+                                Snackbar.make(gitOAuth, accessToken.access_token, Snackbar.LENGTH_LONG).show();
+                                sharedPreferences.getString(accessToken.access_token, "");
+                            }
+                        });
             } else if (uri.getQueryParameter("error") != null) {
                 //TODO Tratar erro11
             }
