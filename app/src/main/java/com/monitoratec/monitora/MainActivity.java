@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity {
      TextView gitText;
     @BindView(R.id.git_image)
      ImageView gitImage;
-    private GithubStatusApi statusApiImpl;
     @BindView(R.id.tilUsername)
      TextInputLayout gitLogin;
     @BindView(R.id.tilPassword)
@@ -63,8 +62,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.git_oauth)
      Button gitOAuth;
     private boolean isFieldsOk;
-    @Inject GitHubApi githubApi;
     @Inject SharedPreferences sharedPreferences;
+    @Inject GitHubApi githubApi;
+    @Inject GithubStatusApi statusApiImpl;
     @Inject GitHubOAuthApi githubOAuthApi;
 
     @Override
@@ -170,6 +170,35 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        statusApiImpl.lastMessage().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Status>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onNext(Status status) {
+
+                        switch (status.getStatusName()){
+                            case GOOD:
+                                setImageAndTextColor(status);
+                                break;
+                            case MINOR:
+                                setImageAndTextColor(status);
+                                break;
+                            case MAJOR:
+                                setImageAndTextColor(status);
+                                break;
+                        }
+                    }
+                });
     }
 
     private void setImageAndTextColor(Status status){
