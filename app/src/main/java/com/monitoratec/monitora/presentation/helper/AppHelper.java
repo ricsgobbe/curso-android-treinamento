@@ -13,9 +13,13 @@ import com.monitoratec.monitora.R;
 
 public final class AppHelper {
 
-    private AppHelper(){}
+    private final Context mContext;
 
-    public static boolean vailidateRequiredField(Context context, TextInputLayout...fields){
+    public AppHelper(Context context){
+        mContext = context;
+    }
+
+    public  boolean vailidateRequiredField(Context context, TextInputLayout...fields){
         boolean isValid = true;
         for(TextInputLayout field : fields){
             EditText editText = field.getEditText();

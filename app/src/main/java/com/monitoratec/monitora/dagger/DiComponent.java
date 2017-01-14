@@ -1,11 +1,10 @@
 package com.monitoratec.monitora.dagger;
 
-import com.monitoratec.monitora.MainActivity;
+import com.monitoratec.monitora.presentation.ui.auth.AuthActivity;
 import com.monitoratec.monitora.dagger.module.ApplicationModule;
-import com.monitoratec.monitora.dagger.module.NetworkModule;
 import com.monitoratec.monitora.dagger.module.PreferenceModule;
-import com.monitoratec.monitora.dagger.module.ServiceModule;
-
+import com.monitoratec.monitora.dagger.module.infraestruture.*;
+import com.monitoratec.monitora.dagger.module.presentation.*;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -15,15 +14,15 @@ import dagger.Component;
  */
 
 
-   @Singleton
+@Singleton
 @Component(modules = {
         ApplicationModule.class,
+        HelperModule.class,
         PreferenceModule.class,
         NetworkModule.class,
-        ServiceModule.class
+        ServiceModule.class,
+        ManagerModule.class
 })
 public interface DiComponent {
-
-    void inject(MainActivity activity);
-
+    UiComponent uiComponent();
 }

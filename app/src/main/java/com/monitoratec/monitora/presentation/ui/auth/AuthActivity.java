@@ -56,6 +56,8 @@ public class AuthActivity extends BaseActivity {
     GitHubStatusService statusApiImpl;
     @Inject
     GitHubOAuthService githubOAuthService;
+    @Inject
+    AppHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class AuthActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         gitBtnLogin.setOnClickListener(view -> {
-           if(AppHelper.vailidateRequiredField(AuthActivity.this, gitLogin, gitPassword)){
+           if(mHelper.vailidateRequiredField(AuthActivity.this, gitLogin, gitPassword)){
                 String userName = gitLogin.getEditText().getText().toString();
                 String password = gitPassword.getEditText().getText().toString();
                 final String credential = Credentials.basic(userName, password);
@@ -95,7 +97,7 @@ public class AuthActivity extends BaseActivity {
                processOAuthRedirectUri();
 
                RxTextView.textChanges(gitLogin.getEditText()).skip(1).subscribe(text ->{
-                  AppHelper.vailidateRequiredField(this, gitLogin);
+                   mHelper.vailidateRequiredField(this, gitLogin);
                });
            }
         });

@@ -9,7 +9,7 @@ import rx.Observable;
  * Created by ricardo.sgobbe on 09/01/2017.
  */
 
-public interface GithubStatusRepository {
+public interface GitHubStatusRepository {
 
 
     String BASE_URL = "https://status.github.com/api/";
