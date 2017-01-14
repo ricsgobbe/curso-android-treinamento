@@ -16,10 +16,6 @@ import rx.Observable;
 public interface GitHubOAuthApi {
     String BASE_URL = "https://github.com/login/oauth/";
 
-    Retrofit RETROFIT = new Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build();
 
     @Headers({"Accept: application/json"})
     @FormUrlEncoded

@@ -8,4 +8,5 @@
     <string name="oauth_client_secret">eb127ae8c15efbde8fe0f84c259fb89af5330416</string>
     <string name="oauth_host">google.com.br</string>
     <string name="oauth_schema">https</string>
+    <string name="sp_file_key">file</string>
 </resources>

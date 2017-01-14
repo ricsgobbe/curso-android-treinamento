@@ -25,8 +25,4 @@ public abstract class MySubscribe<T> extends Subscriber<T> {
 
     public abstract void onError(String message);
 
-    @Override
-    public void onNext(T t) {
-
-    }
 }

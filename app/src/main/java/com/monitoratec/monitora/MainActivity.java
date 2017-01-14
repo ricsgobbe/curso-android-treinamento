@@ -24,10 +24,14 @@ import com.monitoratec.monitora.domain.entity.GithubStatusApi;
 import com.monitoratec.monitora.domain.entity.Status;
 import com.monitoratec.monitora.domain.entity.User;
 import com.monitoratec.monitora.util.AppUtils;
+import com.monitoratec.monitora.util.MySubscribe;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Credentials;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +46,7 @@ import static com.monitoratec.monitora.domain.entity.Status.Type.GOOD;
 import static com.monitoratec.monitora.domain.entity.Status.Type.MAJOR;
 import static com.monitoratec.monitora.domain.entity.Status.Type.MINOR;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.git_text_status)
@@ -59,20 +63,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.git_oauth)
      Button gitOAuth;
     private boolean isFieldsOk;
-    private GitHubApi githubApi;
-    private SharedPreferences sharedPreferences;
-    private GitHubOAuthApi githubOAuthApi;
+    @Inject GitHubApi githubApi;
+    @Inject SharedPreferences sharedPreferences;
+    @Inject GitHubOAuthApi githubOAuthApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gitText = (TextView) findViewById(R.id.git_text_status);
-        gitImage = (ImageView) findViewById(R.id.git_image);
-        gitLogin = (TextInputLayout) findViewById(R.id.tilUsername);
-        gitPassword = (TextInputLayout) findViewById(R.id.tilPassword);
-        gitBtnLogin = (Button) findViewById(R.id.git_button);
-        gitOAuth = (Button) findViewById(R.id.git_oauth);
+        getDaggerDiComponent().inject(this);
+        ButterKnife.bind(this);
 
         gitBtnLogin.setOnClickListener(view -> {
            if(AppUtils.vailidateRequiredField(MainActivity.this, gitLogin, gitPassword)){
@@ -82,18 +82,18 @@ public class MainActivity extends AppCompatActivity {
                githubApi.basicAuth(credential)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<User>() {
+                        .subscribe(new MySubscribe<User>() {
                            @Override
                            public void onCompleted() {
 
                            }
 
-                           @Override
-                           public void onError(Throwable e) {
-                                   Log.e(TAG, e.getMessage());
-                           }
+                            @Override
+                            public void onError(String message) {
 
-                           @Override
+                            }
+
+                            @Override
                            public void onNext(User user) {
                                sharedPreferences.edit()
                                        .putString(getString(R.string.sp_credential_key), credential)
@@ -120,15 +120,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });
-
-
-        statusApiImpl = GithubStatusApi.RETROFIT.create(GithubStatusApi.class);
-        githubApi = GitHubApi.RETROFIT.create(GitHubApi.class);
-        githubOAuthApi = GitHubApi.RETROFIT.create(GitHubOAuthApi.class);
-        sharedPreferences = getSharedPreferences(getString(R.string.shared_key_file), MODE_PRIVATE);
-
-
-
 
     }
 
@@ -179,35 +170,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        statusApiImpl.lastMessage().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Status>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onNext(Status status) {
-
-                        switch (status.getStatusName()){
-                            case GOOD:
-                                setImageAndTextColor(status);
-                                break;
-                            case MINOR:
-                                setImageAndTextColor(status);
-                                break;
-                            case MAJOR:
-                                setImageAndTextColor(status);
-                                break;
-                        }
-                    }
-                });
     }
 
     private void setImageAndTextColor(Status status){

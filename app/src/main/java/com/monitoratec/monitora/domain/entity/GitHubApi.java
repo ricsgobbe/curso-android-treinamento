@@ -15,11 +15,7 @@ public interface GitHubApi {
     String BASE_URL = "https://api.github.com/";
 
 
-    Retrofit RETROFIT = new Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build();
-
     @GET("user")
     Observable<User> basicAuth(@Header("Authorization") String credential);
+
 }
