@@ -1,4 +1,4 @@
-package com.monitoratec.monitora.util;
+package com.monitoratec.monitora.presentation.helper;
 
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
@@ -11,9 +11,9 @@ import com.monitoratec.monitora.R;
  * Created by ricardo.sgobbe on 11/01/2017.
  */
 
-public final class AppUtils {
+public final class AppHelper {
 
-    private AppUtils(){}
+    private AppHelper(){}
 
     public static boolean vailidateRequiredField(Context context, TextInputLayout...fields){
         boolean isValid = true;

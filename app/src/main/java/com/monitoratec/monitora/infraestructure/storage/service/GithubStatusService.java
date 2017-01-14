@@ -1,4 +1,6 @@
-package com.monitoratec.monitora.domain.entity;
+package com.monitoratec.monitora.infraestructure.storage.service;
+
+import com.monitoratec.monitora.domain.entity.Status;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -11,7 +13,7 @@ import rx.Observable;
  * Created by ricardo.sgobbe on 09/01/2017.
  */
 
-public interface GithubStatusApi {
+public interface GithubStatusService {
 
 
     String BASE_URL = "https://status.github.com/api/";

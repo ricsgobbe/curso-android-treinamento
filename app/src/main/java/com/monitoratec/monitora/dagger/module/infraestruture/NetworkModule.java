@@ -1,10 +1,10 @@
-package com.monitoratec.monitora.dagger.module;
+package com.monitoratec.monitora.dagger.module.infraestruture;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.monitoratec.monitora.domain.entity.GitHubApi;
-import com.monitoratec.monitora.domain.entity.GitHubOAuthApi;
-import com.monitoratec.monitora.domain.entity.GithubStatusApi;
+import com.monitoratec.monitora.infraestructure.storage.service.GitHubService;
+import com.monitoratec.monitora.infraestructure.storage.service.GitHubOAuthService;
+import com.monitoratec.monitora.infraestructure.storage.service.GitHubStatusService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -52,7 +52,7 @@ public class NetworkModule {
     Retrofit providesRetrofitGitHub(GsonConverterFactory gsonFactory,
                                     RxJavaCallAdapterFactory rxFactory) {
         return buildRetrofit(gsonFactory, rxFactory,
-                GitHubApi.BASE_URL);
+                GitHubService.BASE_URL);
     }
 
     @Provides
@@ -61,7 +61,7 @@ public class NetworkModule {
     Retrofit providesRetrofitGitHubStatus(GsonConverterFactory gsonFactory,
                                           RxJavaCallAdapterFactory rxFactory) {
         return buildRetrofit(gsonFactory, rxFactory,
-                GithubStatusApi.BASE_URL);
+                GitHubStatusService.BASE_URL);
     }
 
     @Provides
@@ -70,7 +70,7 @@ public class NetworkModule {
     Retrofit providesRetrofitGitHubOAuth(GsonConverterFactory gsonFactory,
                                          RxJavaCallAdapterFactory rxFactory) {
         return buildRetrofit(gsonFactory, rxFactory,
-                GitHubOAuthApi.BASE_URL);
+                GitHubOAuthService.BASE_URL);
     }
 
     private Retrofit buildRetrofit(GsonConverterFactory converterFactory,

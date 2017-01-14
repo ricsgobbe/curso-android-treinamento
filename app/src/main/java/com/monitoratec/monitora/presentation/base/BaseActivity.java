@@ -1,7 +1,8 @@
-package com.monitoratec.monitora;
+package com.monitoratec.monitora.presentation.base;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.monitoratec.monitora.MyApplication;
 import com.monitoratec.monitora.dagger.DiComponent;
 
 /**

@@ -1,4 +1,6 @@
-package com.monitoratec.monitora.domain.entity;
+package com.monitoratec.monitora.infraestructure.storage.service;
+
+import com.monitoratec.monitora.domain.entity.AccessToken;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -13,7 +15,7 @@ import rx.Observable;
  * Created by ricardo.sgobbe on 11/01/2017.
  */
 
-public interface GitHubOAuthApi {
+public interface GitHubOAuthService {
     String BASE_URL = "https://github.com/login/oauth/";
 
 
